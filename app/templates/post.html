@@ -1,0 +1,14 @@
+    <table border='1'>
+        <tr valign='top'>
+            <td><img src="{{ post.author.avatar(20) }}"></td>
+            <td
+            <!--<i>{{ post.author.nickname }} says:   {{ momentjs(post.timestamp).format('YYYY-MM-DD HH:mm:ss') }}</i>-->
+            {% autoescape false %}
+            <p>{{ _('%(nickname)s said %(when)s:'),nickname='<a href="%s">%s</a>' % (url_for('user', nickname=post.author.nickname), post.author.nickname), when=momentjs(post.timestamp).fromNow()) }}</p>
+            </p>
+            {% endautoescape %}
+                <br> <b> {{ post.body }}</b>
+            </td>
+        </tr>
+    </table>
+ 

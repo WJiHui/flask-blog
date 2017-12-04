@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <table border='1'>
+        <tr valign="top"> 
+            <td><img src="{{ user.avatar(128) }}"></td> 
+            <td>
+                <h1>User:{{ user.nickname }}</h1>
+                {% if user.about_me %}
+                    <p>About me:{{ user.about_me }}</p>
+                {% endif %}
+                {% if user.last_seen %}
+                    <p><i>Last seen is:{{ momentjs(user.last_seen).format('LLL') }}</i></p>
+                {% endif %}
+                <p>My email: <i>{{ user.email }}</i></p>
+                <p>{{user.followers.count()}} followers 
+                    {% for follower in user.followers %}
+                        <p><a href="{{url_for('user', nickname=follower.nickname)}}">{{ follower.nickname }}</a></p>
+                    {% endfor %}
+                {% if user.id == g.user.id%}
+                    <p><a href="{{ url_for('edit') }}">Edit your profile.</a></p>
+                {% elif not g.user.is_following(user) %}
+                    <a href="{{url_for('follow', nickname=user.nickname)}}">Follow</a>
+                {% else %}
+                    <a href="{{url_for('unfollow', nickname=user.nickname)}}">UnFollow</a>
+                {% endif %}
+                </p>
+            </td>
+        </tr>
+    </table>
+    <hr>
+    {% for post in posts.items %}
+        {% include 'post.html' %}
+    {% endfor %}
+    {% if posts.has_prev %}<a href="{{ url_for('user', nickname=user.nickname, page=posts.prev_num) }}">&lt;&lt;前一页</a>
+    {% else %}&lt;&lt;前一页
+    {% endif %}
+    {% if posts.has_next %}<a href="{{ url_for('user', nickname=user.nickname, page=posts.next_num) }}">后一页&gt;&gt;</a>
+    {% else %}后一页&gt;&gt;
+    {% endif %}
+
+{% endblock %}

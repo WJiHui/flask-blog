@@ -1,0 +1,24 @@
+Internationalization and Localization 缩写 I18n L10n
+使用Flask-Babel扩展转换语言
+
+1. 安装  flask/bin/pip install flask-babel
+
+2. Marking texts to translate标记翻译文本
+	a. 脚本中：
+	   闪现消息需要翻译：翻译flash闪现的信息
+		from flask_babel import gettext
+		def edit():
+			...
+			flash('Your changes has been saved.')
+			使用gettext函数
+			flash(gettext('Your changes has been saved.'))
+		base.html模板中翻译：
+			<li><a href="{{ url_for('index') }}">Home</a></li>
+			<li><a href="{{ url_for('index') }}">{{ _('Home') }}</a></li>
+			复杂一点的 
+			<i>{{ post.author.nickname }} says:   {{ momentjs(post.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+			<i>{{ post.author.nickname }} says:   {{ momentjs(post.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+			
+	b. 
+
+	
