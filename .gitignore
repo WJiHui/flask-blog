@@ -1,4 +1,4 @@
 *.pyc
 *.db
 flask/
-
+tmp/
