@@ -1,14 +1,13 @@
 1. 处理web表单，需要使用flask-wtf
     安装 flask/bin/pip install flask-wtf
 	
-2.	创建一个配置文件 
-	  1 # encoding:utf-8
-	  2
-	  3 # 激活跨站点请求伪造
-	  4 CSRF_ENABLED = True
-	  5
-	  6 # 激活CSRF需要，创建令牌，验证表单
-	  7 SECRET_KEY = 'You want embarrass me, fuck you'
+2.创建一个配置文件 config.py
+	   # encoding:utf-8
+	  
+	   # 激活跨站点请求伪造
+	   CSRF_ENABLED = True
+	   # 激活CSRF需要，创建令牌，验证表单
+	   SECRET_KEY = 'You want embarrass me, fuck you'
 
     读取配置文件app/__init__.py
 	from flask import Flask
@@ -105,6 +104,3 @@
 			{% block content %}{% endblock %}
 		  </body>              
 		</html>                
-	                       
-             
-		                   
