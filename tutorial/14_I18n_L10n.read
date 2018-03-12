@@ -3,22 +3,87 @@ Internationalization and Localization 缩写 I18n L10n
 
 1. 安装  flask/bin/pip install flask-babel
 
-2. Marking texts to translate标记翻译文本
-	a. 脚本中：
-	   闪现消息需要翻译：翻译flash闪现的信息
-		from flask_babel import gettext
-		def edit():
-			...
-			flash('Your changes has been saved.')
-			使用gettext函数
-			flash(gettext('Your changes has been saved.'))
-		base.html模板中翻译：
-			<li><a href="{{ url_for('index') }}">Home</a></li>
-			<li><a href="{{ url_for('index') }}">{{ _('Home') }}</a></li>
-			复杂一点的 
-			<i>{{ post.author.nickname }} says:   {{ momentjs(post.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
-			<i>{{ post.author.nickname }} says:   {{ momentjs(post.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
-			
-	b. 
+2. 在config.py 中定义可能翻译的语言
+    # available languages
+    LANGUAGES= ['en', 'es', 'zh']
 
-	
+3. 初始化一babel,Babel示例提供了一个localeselector选择浏览器优先显示的语言
+    app/__init__.py
+    from flask_babel import Babel
+    from flask impoert request
+    babel = Babel(app)
+    @babel.localeselector
+    def get_locale():
+        return request.accecpt_languages.best_match(app.config['LANGUAGES'])
+
+4. Marking texts to translate标记翻译文本
+    a. 脚本中直接翻译： app/views.py
+        闪现消息需要翻译：翻译flash闪现的信息
+        from flask_babel import _
+        def edit():
+	   ...
+	   flash('Your changes has been saved.')
+	   使用gettext函数
+	   flash(_('Your changes has been saved.'))
+
+    b. 文本是动态组成的
+        flash('User {} not found.'.format(username))
+    翻译flash(_('User %(username)s not found.', username=username))
+
+    c. 应用正在启动，还没有收到请求，不知道是啥语言，比如一个表单字段的标签，解决方式是延迟取值
+    from flask_babel import lazy_gettext as _l 
+    class LoginForm(FlaskForm):
+        user = StringField(_('user'), validators=[DataRequired()])
+
+    d. base.html模板中翻译：
+        <li><a href="{{ url_for('index') }}">Home</a></li>
+        <li><a href="{{ url_for('index') }}">{{ _('Home') }}</a></li>
+        
+        <h1>{{ _('Hi, %(username)s!', username=current_user.username) }}</h1>
+
+        复杂一点的 
+        <i>{{ post.author.nickname }} says:   {{ momentjs(post.timestamp).format('YYYY-MM-DD HH:mm:ss') }}
+
+        {% set user_link %}
+            <a href="{{ url_for('user', nickname=post.author.nickname) }}">{{ post.author.nickname }}</a>
+        {% endset %}
+        <p>{{ _("%(nickname)s said %(when)s:", nickname=user_link, when=momentjs(post.timestamp).fromNow()) }}</p>
+
+5. 提取文本来翻译Extracting Text to Translate
+    使用pybabel命令提取需要翻译的文本，创建一个配置文件来告诉pybabel浏览可能需要翻译的文件
+    babel.cfg Pybable配置文件
+    [python: app/**.py]                            # 需要翻译的python文件
+    [jinja2: app/templates/**.html]                # 需要翻译的janja2模板
+    extensions=jinja2.ext.autoescape,jinja2.ext.with_    # janja2模板引擎的两个扩展，帮助分析模板文件
+
+    执行命令提取
+    flask/bin/pybabel extract -F babel.cfg -k _l -o messages.pot .
+    提取后生成一个messages.pot文件，这个文件随时可以再次生成，所以不应该加到版本库中
+    加入有新标记的地方需要翻译，就需要重新提取
+
+6. 为中文创建一个翻译
+   flask/bin/pybabel init -i messages.pot -d app/translations -l zh
+
+   新生成app/translations/zh/LC_MESSAGES/messages.po文件，文件中msgid是被标记翻译的原语言，msgstr需要自己输入翻译的语言
+   修改完messages.po文件后，编译这个文件，然后应用才能使用
+   编译： flask/bin/pybabel compile -d app/translations/
+   编译后生成一个messages.mo文件
+   
+   提取--创建翻译--输入翻译语言--编译
+
+7. 新标记一个需要翻译的地方
+   提取：flask/bin/pybabel extract -F babel.cfg -k _l -o messages.pot .
+   更新po文件： flask/bin/pybabel update -i messages.pot -d app/translations/
+   编辑po文件翻译
+   编译po文件：flask/bin/pybabel compile -d app/translations/
+
+8. 翻译时间和日期
+    现在一共有两个地方使用到时间显示，现在把他们的字段类型都改为日期类型
+    User类： last_seen = db.Column(db.DateTime, default=datetime.utcnow)
+    Post类： timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    然后重新建立数据库
+    修改app/momentjs.py脚本，所有的momentjs类和映射修改为Momentjs
+    self.timestamp = format_datetime(timestamp)
+    render()直接返回self.timestamp
+
+

@@ -4,9 +4,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email
 from app.models import User
-
+from flask_babel import lazy_gettext as _l 
 class LoginForm(FlaskForm):
-    user = StringField('user', validators=[DataRequired()])
+    user = StringField(_l('user'), validators=[DataRequired()])
     remember_me = BooleanField('remember_me', default=False)
 
 class EditForm(FlaskForm):

@@ -11,9 +11,12 @@
         <script src="http://code.juery.com/juery.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
         <script src="/static/js/moment.min.js"></script>
+        {% if g.locale != 'en' %}
+            <script src=/static/js/moment-with-locales.min.js></script>
+        {% endif %}
     </head>
     <body>
-        <div>{{g.user.nickname}} blog: <a href="{{ url_for('index') }}">Home</a>
+        <div>{{g.user.nickname}} blog: <a href="{{ url_for('index') }}">{{ _("Home") }}</a>
             {% if g.user.is_authenticated %} 
                 <a href="{{ url_for('user', nickname=g.user.nickname) }}">Your Profile</a>
                 <form style="display: inline;" action="{{ url_for('search') }}"  method="post" name="search">
@@ -26,13 +29,13 @@
         </div>
         <hr>
         {% with messages = get_flashed_messages() %}
-        {% if messages %}
-        <ul>
-            {% for i in messages %}
-            <li>{{i}}</li>
-            {% endfor %}
-        </ul>
-        {% endif %}
+            {% if messages %}
+            <ul>
+                {% for i in messages %}
+                <li>{{i}}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         {% endwith %}
         {% block content %}{% endblock%}
      </body>

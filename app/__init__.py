@@ -13,8 +13,12 @@ lm.init_app(app)
 lm.login_view = 'login'
 
 from flask_babel import Babel
+from flask import request
 babel = Babel(app)
-
+@babel.localeselector
+def get_locale():
+    languages = request.accept_languages.best_match(app.config['LANGUAGES'])
+    return languages 
 
 from app import views, models
 from flask_mail import Mail
@@ -47,8 +51,11 @@ if not app.debug:
     app.logger.addHandler(file_handler)
     app.logger.info('microblog startup')
 
-from .momentjs import momentjs
-app.jinja_env.globals['momentjs'] = momentjs
+
+from .momentjs import Momentjs
+app.jinja_env.globals['Momentjs'] = Momentjs
+
+
 
 
 

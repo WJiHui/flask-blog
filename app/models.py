@@ -3,6 +3,7 @@ from hashlib import md5
 from flask_login import UserMixin
 from app import app
 import sys
+from datetime import datetime
 
 
 followers = db.Table('followers', 
@@ -17,7 +18,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(64), index=True, unique=True)
     posts = db.relationship('Post', backref='author', lazy='dynamic')
     about_me = db.Column(db.String(140))
-    last_seen = db.Column(db.String(20))
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
     followed_users = db.relationship('User', 
                                secondary=followers,
                                primaryjoin=(followers.c.fans_id == id),
@@ -91,9 +92,9 @@ class Post(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     body = db.Column(db.String(140))
-    timestamp = db.Column(db.String(20))
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
+    language = db.Column(db.String(5))
     def __repr__(self):
         return '<Post %r>' % (self.body)
 

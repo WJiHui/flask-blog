@@ -9,7 +9,8 @@ from config import POSTS_AVG_PAGE, MAX_SEARCH_RESULTS
 from .emails import follower_notification 
 from app import babel
 from config import LANGUAGES
-from flask_babel import gettext
+from flask_babel import get_locale
+from guess_language import guess_language 
 
 
 @app.route('/', methods=['GET', "POST"])
@@ -19,8 +20,13 @@ from flask_babel import gettext
 def index(page=1):
     form = PostForm()
     if form.validate_on_submit():
-        now_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
-        post = Post(body=form.post.data, timestamp=now_time, author=g.user)
+        # now_time = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+        now_time = datetime.utcnow()
+        language = guess_language(form.post.data)
+        if language == 'UNKNOW' or len(language)  > 5:
+            language = ''
+        post = Post(body=form.post.data, timestamp=now_time, author=g.user,
+                    language=language)
         db.session.add(post)
         db.session.commit()
         flash('Your post is now live')
@@ -75,10 +81,12 @@ def register():
 def before_request():
     g.user = current_user
     if g.user.is_authenticated:
-        g.user.last_seen = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        # g.user.last_seen = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+        g.user.last_seen = datetime.utcnow()
         db.session.add(g.user)
         db.session.commit()
         g.search_form = SearchForm()
+    g.locale = str(get_locale())
 
 @lm.user_loader
 def load_user(id):
@@ -102,6 +110,7 @@ def user(nickname, page=1):
     return render_template('user.html', user=user, posts=posts)
 
 from .form import LoginForm, EditForm
+from flask_babel import _
 @app.route('/edit', methods=['GET', 'POST'])
 @login_required
 def edit():
@@ -111,7 +120,7 @@ def edit():
         g.user.about_me = form.about_me.data
         db.session.add(g.user)
         db.session.commit()
-        flash(gettext('Your changes has been saved.'))
+        flash(_('Your changes has been saved.'))
         return redirect(url_for('user', nickname=g.user.nickname))
     else:
         form.nickname.data = g.user.nickname
@@ -181,10 +190,3 @@ def search():
 def search_results(query):
     results = Post.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
     return render_template('search_results.html', query=query, results=results)
-
-
-@babel.localeselector
-def get_locale():
-    return request.accecpt_languages.best_match(LANGUAGES.keys())
-
-
