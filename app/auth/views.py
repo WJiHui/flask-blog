@@ -4,15 +4,24 @@ from guess_language import guess_language
 from flask_login import login_user, logout_user, current_user, login_required
 from flask import flash, redirect, session, url_for, request, g, render_template, current_app
 
-from .models import User, Post 
+from .models import User, Post, RequestInfo
 from .emails import follower_notification 
 from .form import LoginForm, RegisterForm, PostForm, SearchForm
 
 from app.auth import bp 
 from app import lm,db
 
+@bp.before_request 
+def get_user_info():
+        request_info = RequestInfo(
+            agent = str(request.user_agent),
+            ip = str(request.remote_addr),
+            cookie = str(request.cookies)
+        )
+        db.session.add(request_info)
+        db.session.commit()
 
-@bp.route('/', methods=['GET', "POST"])
+
 @bp.route('/index', methods=['GET', 'POST'])
 @bp.route('/index/<int:page>',methods=['GET', 'POST'])
 @login_required 
@@ -77,7 +86,7 @@ def register():
     return render_template('register.html', title='register', form=register_form)
 
 
-@bp.before_request 
+@bp.before_app_request 
 def before_request():
     g.user = current_user
     if g.user.is_authenticated:

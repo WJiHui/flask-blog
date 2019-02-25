@@ -101,3 +101,11 @@ class Post(db.Model):
     # if sys.version_info < (3,0):
         # import flask_whooshalchemy
         # flask_whooshalchemy.whoosh_index(current_app._get_current_object(), Post)
+
+
+class RequestInfo(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    ip = db.Column(db.String(20))
+    agent = db.Column(db.String(250))
+    cookie = db.Column(db.String(700))
+

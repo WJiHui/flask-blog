@@ -40,6 +40,9 @@ def create_app(config_class=Config):
     from app.auth import bp as auth_bp
     app.register_blueprint(auth_bp)
     
+    from app.system import bp as system_bp
+    app.register_blueprint(system_bp)
+
     if not app.debug and not app.testing:
         import logging
         from logging.handlers import SMTPHandler
