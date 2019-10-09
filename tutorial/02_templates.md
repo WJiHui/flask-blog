@@ -1,4 +1,4 @@
- 1. 创建一个模板app/templates/base.html
+#### 1. 创建一个模板app/templates/base.html
  ``` html
 		<html>
 			<head>
@@ -15,6 +15,7 @@
 			 </body>
 		</html>
 ```				
+				
  继承模板app/templates/index.html
  ``` html
 		{% extends 'base.html'%}
@@ -25,7 +26,8 @@
 		{% endfor %}
 		{% endblock %}
  ``` html
- 2. 使用这个模板 app/view.py
+				
+#### 2. 使用这个模板 app/view.py
  ``` python				
 	from flask import render_template
 	from app import app
