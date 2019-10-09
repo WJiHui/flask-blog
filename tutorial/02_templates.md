@@ -16,6 +16,7 @@
 		</html>
 ```				
  继承模板app/templates/index.html
+ ``` html
 		{% extends 'base.html'%}
 		{% block content %}
 			<h1>Hi,{{user.nickname}}!</h1>
@@ -23,8 +24,9 @@
 			<div><p>{{post.author.nickname}} says:{{post.body}}</p></div>
 		{% endfor %}
 		{% endblock %}
-
+ ``` html
  2. 使用这个模板 app/view.py
+ ``` python				
 	from flask import render_template
 	from app import app
 
@@ -37,3 +39,4 @@
 			{'author': {'nickname': 'Susa'}, 'body': 'The Avengers movie was cool'},
 		]
 		return render_template('index.html', title='Home', user=user, posts=posts)
+```
