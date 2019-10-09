@@ -3,12 +3,12 @@
 	
 #### 2.创建一个配置文件 config.py
 ``` python
-	   # encoding:utf-8
-	  
-	   # 激活跨站点请求伪造
-	   CSRF_ENABLED = True
-	   # 激活CSRF需要，创建令牌，验证表单
-	   SECRET_KEY = 'You want embarrass me, fuck you'
+   # encoding:utf-8
+
+   # 激活跨站点请求伪造
+   CSRF_ENABLED = True
+   # 激活CSRF需要，创建令牌，验证表单
+   SECRET_KEY = 'You want embarrass me, fuck you'
 ```
 读取配置文件app/__init__.py
 ``` python    
