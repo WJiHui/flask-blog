@@ -14,7 +14,7 @@
 				{% block content %}{% endblock%}
 			 </body>
 		</html>
-```				
+```			
 				
  继承模板app/templates/index.html
  ``` html
