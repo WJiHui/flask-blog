@@ -16,7 +16,7 @@
 		</html>
 ```			
 
-	继承模板app/templates/index.html
+继承模板app/templates/index.html
  ``` html				
 		{% extends 'base.html'%}
 		{% block content %}
