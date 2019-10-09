@@ -1,4 +1,5 @@
  1. 创建一个模板app/templates/base.html
+ ``` html
 		<html>
 			<head>
 				{% if title %}
@@ -13,6 +14,7 @@
 				{% block content %}{% endblock%}
 			 </body>
 		</html>
+```				
  继承模板app/templates/index.html
 		{% extends 'base.html'%}
 		{% block content %}
