@@ -82,8 +82,8 @@ def login():
 	    return redirect('/index')
 	return render_template('login.html', title='sign in', form=form)
 ```
-<b> a. validate_on_submit验证数据是否合法
-<b> b. flash函数 呈现给用户页面消息      
+a. validate_on_submit验证数据是否合法
+b. flash函数 呈现给用户页面消息
 修改 ./app/templates/base.html，闪现消息给用户
 ``` html
 <html>                 
