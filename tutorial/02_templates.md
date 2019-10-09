@@ -15,9 +15,9 @@
 			 </body>
 		</html>
 ```			
-				
- 继承模板app/templates/index.html
- ``` html
+
+	继承模板app/templates/index.html
+ ``` html				
 		{% extends 'base.html'%}
 		{% block content %}
 			<h1>Hi,{{user.nickname}}!</h1>
@@ -25,7 +25,7 @@
 			<div><p>{{post.author.nickname}} says:{{post.body}}</p></div>
 		{% endfor %}
 		{% endblock %}
- ``` html
+ ```
 				
 #### 2. 使用这个模板 app/view.py
  ``` python				
