@@ -1,24 +1,26 @@
-1. 处理web表单，需要使用flask-wtf
+#### 1. 处理web表单，需要使用flask-wtf
     安装 flask/bin/pip install flask-wtf
 	
-2.创建一个配置文件 config.py
+#### 2.创建一个配置文件 config.py
+``` python
 	   # encoding:utf-8
 	  
 	   # 激活跨站点请求伪造
 	   CSRF_ENABLED = True
 	   # 激活CSRF需要，创建令牌，验证表单
 	   SECRET_KEY = 'You want embarrass me, fuck you'
-
+```
     读取配置文件app/__init__.py
+``` python    
 	from flask import Flask
 
 	app = Flask(__name__)
 	app.config.from_object('config')
 
 	from app import views
-
-3. 用户登录表单 ./app/form.py  	表单的域定义成类的变量
-
+```
+#### 3. 用户登录表单 ./app/form.py  	表单的域定义成类的变量
+``` python
 	# encoding:utf-8
 
 	from flask_wtf import FlaskForm
@@ -28,11 +30,12 @@
 	class LoginForm(FlaskForm):
 	   openid = StringField('openid', validators=[DataRequired()])
 	   remeber_me = BooleanField('remeber_me', default=False)
-
+```
 
 		
-4. 表单模板
+#### 4. 表单模板
     登陆的模板  app/templates/login.html
+    ``` html
 	 {% extends 'base.html' %}
 	 {% block content %}
 	 <h1>Sign In</h1>   
@@ -49,11 +52,12 @@
 	     <p><input type='submit' value='Sign In'</p>
 	 </form>            
 	 {% endblock %}     
-                           
+    ```                           
 	form.hidden_tag() 模板参数将被替换为一个隐藏字段，用来是实现在配置中激活的 CSRF 保护。
 	                  如果你已经激活了 CSRF，这个字段需要出现在你所有的表单中。
                            
 5. 表单视图和接收表单数据   
+``` python
 	from flask import render_template
 	from app import app
 	
@@ -77,10 +81,11 @@
 		          + str(form.remeber_me.data))
 		    return redirect('/index')
 		return render_template('login.html', title='sign in', form=form)
-		
+	```	
 	a. validate_on_submit验证数据是否合法
 	b. flash函数 呈现给用户页面消息      
 		修改 ./app/templates/base.html，闪现消息给用户
+	``` html
 		<html>                 
 		  <head>               
 			{% if title %}     
@@ -104,3 +109,4 @@
 			{% block content %}{% endblock %}
 		  </body>              
 		</html>                
+```
