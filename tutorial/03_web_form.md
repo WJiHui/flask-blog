@@ -10,7 +10,7 @@
 	   # 激活CSRF需要，创建令牌，验证表单
 	   SECRET_KEY = 'You want embarrass me, fuck you'
 ```
-    读取配置文件app/__init__.py
+读取配置文件app/__init__.py
 ``` python    
 	from flask import Flask
 
@@ -34,7 +34,7 @@
 
 		
 #### 4. 表单模板
-    登陆的模板  app/templates/login.html
+登陆的模板  app/templates/login.html
     ``` html
 	 {% extends 'base.html' %}
 	 {% block content %}
@@ -53,10 +53,10 @@
 	 </form>            
 	 {% endblock %}     
     ```                           
-	form.hidden_tag() 模板参数将被替换为一个隐藏字段，用来是实现在配置中激活的 CSRF 保护。
+form.hidden_tag() 模板参数将被替换为一个隐藏字段，用来是实现在配置中激活的 CSRF 保护。
 	                  如果你已经激活了 CSRF，这个字段需要出现在你所有的表单中。
                            
-5. 表单视图和接收表单数据   
+#### 5. 表单视图和接收表单数据   
 ``` python
 	from flask import render_template
 	from app import app
@@ -81,11 +81,11 @@
 		          + str(form.remeber_me.data))
 		    return redirect('/index')
 		return render_template('login.html', title='sign in', form=form)
-	```	
-	a. validate_on_submit验证数据是否合法
-	b. flash函数 呈现给用户页面消息      
-		修改 ./app/templates/base.html，闪现消息给用户
-	``` html
+```
+a. validate_on_submit验证数据是否合法
+b. flash函数 呈现给用户页面消息      
+修改 ./app/templates/base.html，闪现消息给用户
+``` html
 		<html>                 
 		  <head>               
 			{% if title %}     
